@@ -54,7 +54,9 @@ namespace VSLangNameGenerator
 
             if(rootObject.VariantGroups.Count == 1)
             {
-                Console.WriteLine($"block-{rootObject.Code}-north: {blockName}");
+                string fullFileName = $"\"block-{rootObject.Code}-north\": \"{blockName}\"";
+                Console.WriteLine(fullFileName);
+                SaveFile(fullFileName);
             }
             else if(rootObject.VariantGroups.Count > 1)
             {
@@ -68,14 +70,29 @@ namespace VSLangNameGenerator
                             if (state.Contains("dummy")) continue;
                             string materialName = state;
                             if (Materials.ContainsKey(state)) materialName = Materials[state];
-
-                            Console.WriteLine($"block-{rootObject.Code}-{state}-north: {blockName} ({materialName})");
+                            string fullFileName = $"\"block-{rootObject.Code}-{state}-north\": \"{blockName} ({materialName})\"";
+                            Console.WriteLine(fullFileName);
+                            SaveFile(fullFileName);
                         }
                     }
                 }
             }    
             
-            
+            return true;
+        }
+
+        static bool SaveFile(string content)
+        {
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"lang.txt");
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Dispose();
+            }
+
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.WriteLine(content);
+            }
 
             return true;
         }
